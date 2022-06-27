@@ -408,22 +408,6 @@ stop_v2ray() {
   echo 'info: Stop the V2Ray service.'
 }
 
-check_update() {
-  if [[ -f '/etc/systemd/system/v2ray.service' ]]; then
-    get_version
-    local get_ver_exit_code=$?
-    if [[ "$get_ver_exit_code" -eq '0' ]]; then
-      echo "info: Found the latest release of V2Ray $RELEASE_VERSION . (Current release: $CURRENT_VERSION)"
-    elif [[ "$get_ver_exit_code" -eq '1' ]]; then
-      echo "info: No new version. The current version of V2Ray is $CURRENT_VERSION ."
-    fi
-    exit 0
-  else
-    echo 'error: V2Ray is not installed.'
-    exit 1
-  fi
-}
-
 remove_v2ray() {
   if systemctl list-unit-files | grep -qw 'v2ray'; then
     if [[ -n "$(pidof v2ray)" ]]; then
@@ -490,7 +474,6 @@ main() {
 
   # Parameter information
   [[ "$HELP" -eq '1' ]] && show_help
-  [[ "$CHECK" -eq '1' ]] && check_update
   [[ "$REMOVE" -eq '1' ]] && remove_v2ray
 
   # Two very important variables
